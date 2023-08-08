@@ -26,7 +26,7 @@ class MySQL
     {
         try {
             return new PDO(
-                'mysql:host=' . HOST . '; dbname=' . BANCO . ';', USUARIO, SENHA
+                'mysql:host=' . HOST . '; port=3306; dbname=' . BANCO . ';', USUARIO, SENHA
             );
         } catch (PDOException $exception) {
             throw new PDOException($exception->getMessage());
