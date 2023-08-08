@@ -7,7 +7,7 @@ ini_set('display_startup_erros', 1);
 error_reporting(E_ERROR);
 
 /* CONSTANTES DO BANCO */
-define('HOST', 'localhost');
+define('HOST', 'mysql');
 define('BANCO', 'DB_NAME');
 define('USUARIO', 'DB_USER');
 define('SENHA', 'DB_PASS');
