@@ -35,6 +35,27 @@ class MySQL
 
     /**
      * @param $tabela
+     * @return array
+     */
+    public function getAll($tabela)
+    {
+        if ($tabela) {
+
+            $consulta = 'SELECT * FROM ' . $tabela;
+
+            $stmt = $this->db->query($consulta);
+            
+            $registros = $stmt->fetchAll($this->db::FETCH_ASSOC);
+
+            if (is_array($registros) && count($registros) > 0) {
+                return $registros;
+            }
+        }
+        throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_SEM_RETORNO);
+    }
+
+    /**
+     * @param $tabela
      * @param $id
      * @return string
      */
@@ -54,23 +75,6 @@ class MySQL
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_SEM_RETORNO);
         }
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
-    }
-
-    /**
-     * @param $tabela
-     * @return array
-     */
-    public function getAll($tabela)
-    {
-        if ($tabela) {
-            $consulta = 'SELECT * FROM ' . $tabela;
-            $stmt = $this->db->query($consulta);
-            $registros = $stmt->fetchAll($this->db::FETCH_ASSOC);
-            if (is_array($registros) && count($registros) > 0) {
-                return $registros;
-            }
-        }
-        throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_SEM_RETORNO);
     }
 
     /**

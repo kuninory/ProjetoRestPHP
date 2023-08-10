@@ -2,11 +2,12 @@
 
 use Util\ConstantesGenericasUtil;
 use Util\RotasUtil;
+use Validator\RequestValidator;
 
 include ('/application/public/bootstrap.php');
 
 try {
-    $RequestValidator = new \Validator\RequestValidator(RotasUtil::getRotas());
+    $RequestValidator = new RequestValidator(RotasUtil::getRotas());
     $retorno = $RequestValidator->processarRequest();
 } catch (Exception $ex) {
     

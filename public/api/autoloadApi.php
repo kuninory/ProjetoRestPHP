@@ -6,7 +6,7 @@
  */
 function autoload($classe)
 {
-    $diretorioBase = DIR_APP . DS;
+    $diretorioBase = DIR_APP . DS . DIR_PROJETO . DS;
     $classe = $diretorioBase . str_replace('\\', DS, $classe) . '.php';
     //var_dump($classe);exit;
     if (file_exists($classe) && !is_dir($classe)) {
