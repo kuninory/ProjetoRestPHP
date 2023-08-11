@@ -42,7 +42,9 @@ class UsuariosService
         
         //Verifica se a função está listada na lista RECURSOS_GET
         if (in_array($recurso, self::RECURSOS_GET, true)) {
-            $retorno = $this->dados['id'] > 0 ? $this->getOneByKey() : $this->$recurso();
+
+            //Se tiver o ID informado na RequestQuery, chama getOneByKey(), caso contrário chama o listar().
+            $retorno = $this->dados['id'] > 0 ? $this->getOneByKey() : $this->$recurso(); //Variable functions: 'listar' como função.
         } else {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
@@ -61,7 +63,9 @@ class UsuariosService
     {
         $retorno = null;
         $recurso = $this->dados['recurso'];
+
         if (in_array($recurso, self::RECURSOS_DELETE, true)) {
+            
             if ($this->dados['id'] > 0) {
                 $retorno = $this->$recurso();
             } else {

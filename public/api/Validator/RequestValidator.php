@@ -36,22 +36,27 @@ class RequestValidator
     {
         $retorno = ConstantesGenericasUtil::MSG_ERRO_TIPO_ROTA;
 
+        //Verifica se é GET, POST, DELETE ou PUT
         if (in_array($this->request['metodo'], ConstantesGenericasUtil::TIPO_REQUEST, true)) {
             $retorno = $this->direcionarRequest();
         }
+
         return $retorno;
     }
 
     private function direcionarRequest()
     {
+
+        $this->TokensAutorizadosRepository->validarToken(getallheaders()['Authorization']);
+
+        //Se não for GET nem DELETE, o BODY da request precisa ser tratado
         if ($this->request['metodo'] !== self::GET && $this->request['metodo'] !== self::DELETE) {
             $this->dadosRequest = JsonUtil::tratarCorpoRequisicaoJson();
             return $this->dadosRequest;
         }
         
-        $this->TokensAutorizadosRepository->validarToken(getallheaders()['Authorization']);
-
         $metodo = $this->request['metodo'];
+
         return $this->$metodo(); //Isto é uma execução de uma Variable functions.
     }
 
@@ -74,6 +79,7 @@ class RequestValidator
                     throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
             }
         }
+        
         return $retorno;
     }
 }

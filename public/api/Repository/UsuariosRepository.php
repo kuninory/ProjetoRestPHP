@@ -18,6 +18,14 @@ class UsuariosRepository
     }
 
     /**
+     * @return MySQL|object
+     */
+    public function getMySQL()
+    {
+        return $this->MySQL;
+    }
+
+    /**
      * @param $login
      * @return int
      */
@@ -62,13 +70,5 @@ class UsuariosRepository
         $stmt->bindValue(':senha', $dados['senha']);
         $stmt->execute();
         return $stmt->rowCount();
-    }
-
-    /**
-     * @return MySQL|object
-     */
-    public function getMySQL()
-    {
-        return $this->MySQL;
     }
 }
