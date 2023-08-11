@@ -64,10 +64,12 @@ class UsuariosService
         $retorno = null;
         $recurso = $this->dados['recurso'];
 
+        //Verifica se a função está listada na lista RECURSOS_DELETE
         if (in_array($recurso, self::RECURSOS_DELETE, true)) {
-            
+
+            //Verifica se o ID enviado é válido.
             if ($this->dados['id'] > 0) {
-                $retorno = $this->$recurso();
+                $retorno = $this->$recurso(); //Variable functions: 'deletar' como função.
             } else {
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
             }
@@ -151,6 +153,14 @@ class UsuariosService
     }
 
     /**
+     * @return string
+     */
+    private function deletar()
+    {
+        return $this->UsuariosRepository->getMySQL()->delete(self::TABELA, $this->dados['id']);
+    }
+
+    /**
      * @return array
      */
     private function cadastrar()
@@ -173,14 +183,6 @@ class UsuariosService
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
         }
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_SENHA_OBRIGATORIO);
-    }
-
-    /**
-     * @return string
-     */
-    private function deletar()
-    {
-        return $this->UsuariosRepository->getMySQL()->delete(self::TABELA, $this->dados['id']);
     }
 
     /**
