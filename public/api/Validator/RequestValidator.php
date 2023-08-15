@@ -12,7 +12,7 @@ class RequestValidator
 {
 
     private array $request;
-    private array $dadosRequest;
+    private array $dadosRequest = [];
     private object $TokensAutorizadosRepository;
 
     const GET = 'GET';
@@ -52,7 +52,6 @@ class RequestValidator
         //Se não for GET nem DELETE, o BODY da request precisa ser tratado
         if ($this->request['metodo'] !== self::GET && $this->request['metodo'] !== self::DELETE) {
             $this->dadosRequest = JsonUtil::tratarCorpoRequisicaoJson();
-            return $this->dadosRequest;
         }
         
         $metodo = $this->request['metodo'];
@@ -84,7 +83,7 @@ class RequestValidator
     }
 
     /**
-     * Metodo para tratar os GETS
+     * Metodo para tratar os DELETES
      * @return array|mixed|string
      */
     private function delete()
@@ -97,6 +96,54 @@ class RequestValidator
                 case self::USUARIOS:
                     $UsuariosService = new UsuariosService($this->request);
                     $retorno = $UsuariosService->validarDelete();
+                    break;
+                default:
+                    throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
+            }
+        }
+        
+        return $retorno;
+    }
+
+    /**
+     * Metodo para tratar os POSTS
+     * @return array|mixed|string
+     */
+    private function post()
+    {
+        $retorno = ConstantesGenericasUtil::MSG_ERRO_TIPO_ROTA;
+
+        if (in_array($this->request['rota'], ConstantesGenericasUtil::TIPO_POST, true)) {
+            
+            switch ($this->request['rota']) {
+                case self::USUARIOS:
+                    $UsuariosService = new UsuariosService($this->request);
+                    $UsuariosService->setDadosCorpoRequest($this->dadosRequest);
+                    $retorno = $UsuariosService->validarPost();
+                    break;
+                default:
+                    throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
+            }
+        }
+        
+        return $retorno;
+    }
+
+    /**
+     * Metodo para tratar os PUTS
+     * @return array|mixed|string
+     */
+    private function put()
+    {
+        $retorno = ConstantesGenericasUtil::MSG_ERRO_TIPO_ROTA;
+
+        if (in_array($this->request['rota'], ConstantesGenericasUtil::TIPO_PUT, true)) {
+            
+            switch ($this->request['rota']) {
+                case self::USUARIOS:
+                    $UsuariosService = new UsuariosService($this->request);
+                    $UsuariosService->setDadosCorpoRequest($this->dadosRequest);
+                    $retorno = $UsuariosService->validarPut();
                     break;
                 default:
                     throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);

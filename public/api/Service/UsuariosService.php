@@ -49,9 +49,8 @@ class UsuariosService
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
 
-        if ($retorno === null) {
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
-        }
+        //Validando se o retorno é nulo.
+        $this->validarRetornoMetodo($retorno);
 
         return $retorno;
     }
@@ -67,18 +66,13 @@ class UsuariosService
         //Verifica se a função está listada na lista RECURSOS_DELETE
         if (in_array($recurso, self::RECURSOS_DELETE, true)) {
 
-            //Verifica se o ID enviado é válido.
-            if ($this->dados['id'] > 0) {
-                $retorno = $this->$recurso(); //Variable functions: 'deletar' como função.
-            } else {
-                throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
-            }
+            //Validando se foi informado o ID.
+            $this->validarIdObrigatorio();
+
+            $retorno = $this->$recurso(); //Variable functions: 'deletar' como função.
+
         } else {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
-        }
-
-        if ($retorno === null) {
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
         }
 
         return $retorno;
@@ -91,15 +85,15 @@ class UsuariosService
     {
         $retorno = null;
         $recurso = $this->dados['recurso'];
+
         if (in_array($recurso, self::RECURSOS_POST, true)) {
             $retorno = $this->$recurso();
         } else {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
 
-        if ($retorno === null) {
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
-        }
+        //Validando se o retorno é nulo.
+        $this->validarRetornoMetodo($retorno);
 
         return $retorno;
     }
@@ -111,19 +105,20 @@ class UsuariosService
     {
         $retorno = null;
         $recurso = $this->dados['recurso'];
+
         if (in_array($recurso, self::RECURSOS_PUT, true)) {
-            if ($this->dados['id'] > 0) {
-                $retorno = $this->$recurso();
-            } else {
-                throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
-            }
+
+            //Validando se foi informado o ID.
+            $this->validarIdObrigatorio();
+
+            $retorno = $this->$recurso(); //Variable functions: 'put' como função.
+
         } else {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
 
-        if ($retorno === null) {
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
-        }
+        //Validando se o retorno é nulo.
+        $this->validarRetornoMetodo($retorno);
 
         return $retorno;
     }
@@ -178,6 +173,7 @@ class UsuariosService
                 return ['id_inserido' => $idInserido];
             }
 
+            //Voltando a inserção em caso de erro.
             $this->UsuariosRepository->getMySQL()->getDb()->rollBack();
 
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
@@ -191,11 +187,33 @@ class UsuariosService
     private function atualizar()
     {
         if ($this->UsuariosRepository->updateUser($this->dados['id'], $this->dadosCorpoRequest) > 0) {
+
             $this->UsuariosRepository->getMySQL()->getDb()->commit();
             return ConstantesGenericasUtil::MSG_ATUALIZADO_SUCESSO;
         }
+
         $this->UsuariosRepository->getMySQL()->getDb()->rollBack();
+
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_NAO_AFETADO);
     }
 
+    /**
+     * @param $retorno
+     */
+    private function validarRetornoMetodo($retorno): void
+    {
+        if ($retorno === null) {
+            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
+        }
+    }
+
+    /**
+     * Valida se foi informado o ID.
+     */
+    private function validarIdObrigatorio(): void
+    {
+        if ($this->dados['id'] <= 0) {
+            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
+        }
+    } 
 }

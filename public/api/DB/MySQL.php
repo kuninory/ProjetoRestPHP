@@ -57,6 +57,32 @@ class MySQL
     /**
      * @param $tabela
      * @param $id
+     * @return mixed
+     */
+    public function getOneByKey($tabela, $id)
+    {
+        if ($tabela && $id) {
+            
+            $consulta = 'SELECT * FROM ' . $tabela . ' WHERE id = :id';
+
+            $stmt = $this->db->prepare($consulta);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $totalRegistros = $stmt->rowCount();
+
+            if ($totalRegistros === 1) {
+                return $stmt->fetch($this->db::FETCH_ASSOC);
+            }
+            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_SEM_RETORNO);
+        }
+
+        throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
+    }
+
+    /**
+     * @param $tabela
+     * @param $id
      * @return string
      */
     public function delete($tabela, $id)
@@ -75,28 +101,6 @@ class MySQL
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_SEM_RETORNO);
         }
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
-    }
-
-    /**
-     * @param $tabela
-     * @param $id
-     * @return mixed
-     */
-    public function getOneByKey($tabela, $id)
-    {
-        if ($tabela && $id) {
-            $consulta = 'SELECT * FROM ' . $tabela . ' WHERE id = :id';
-            $stmt = $this->db->prepare($consulta);
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
-            $totalRegistros = $stmt->rowCount();
-            if ($totalRegistros === 1) {
-                return $stmt->fetch($this->db::FETCH_ASSOC);
-            }
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_SEM_RETORNO);
-        }
-
-        throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
     }
 
     /**
